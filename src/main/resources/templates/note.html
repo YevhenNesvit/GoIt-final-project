@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!--suppress ALL -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="note">
+        <div class="row mt-5">
+            <div class="col">
+                <form  th:object="${note}" action="/note/create" method="POST">
+                    <input type="hidden" name="id" th:value="${note?.id}">
+                    <div class="form-group">
+                        <label for="name">Ім'я:</label>
+                        <input type="text" id="name" name="name" placeholder="Ім'я" autocomplete="off" class="form-control"
+                               minlength="5" maxlength="100" required
+                               th:field="*{name}" th:value="${note?.name}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">Текст нотатки:</label>
+                        <textarea type="text" id="content" name="content" placeholder="Текст" class="form-control"
+                                  autocomplete="off" minlength="5" maxlength="10000" rows="20"
+                                  th:field="*{content}" th:value="${note?.content}"></textarea>
+                    </div>
+                    <div>
+                        <div class="inline-block">
+                            <input type="radio" id="public" name="access" th:value="PUBLIC"
+                                   th:checked="${note.Access == T(group_project.MyNotebook.note.Access).PUBLIC} ? 'checked'">
+                            <label for="public">Публічна</label>
+                            <input type="radio" id="private" name="access" th:value="PRIVATE"
+                                   th:checked="${note.Access == T(group_project.MyNotebook.note.Access).PRIVATE} ? 'checked'">
+                            <label for="private">Приватна</label>
+                        </div>
+                        <div class="right">
+                            <a class="btn btn-light" th:href="@{/note/list}" title="Відмінити">
+                                Відмінити
+                            </a>
+                            <button class="btn clr" type="submit" title="Створити">
+                                Створити
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

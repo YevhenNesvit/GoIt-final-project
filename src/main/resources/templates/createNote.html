@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<!--suppress ALL -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Редактор нотаток</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.11.2/css/all.css} "/>
+    <link th:rel="stylesheet" th:href="@{/assets/simplemde/simplemde.min.css}"/>
+    <link th:rel="stylesheet" th:href="@{/css/notes.css}"/>
+</head>
+<body>
+    <div class="container">
+        <h1>Створення нотатки</h1>
+        <div th:replace="~{note::note}">...</div>
+    </div>
+    <script th:src="@{/assets/simplemde/simplemde.min.js}"></script>
+    <script>
+        var simplemde = new SimpleMDE({element: document.getElementById("content")});
+    </script>
+</body>
+</html>

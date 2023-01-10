@@ -1,0 +1,125 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!--suppress ALL -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Мої нотатки</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables/dataTables.bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/notes.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  </head>
+  <body>
+    <div class="content-wrapper bordered">
+      <section class="content-header">
+        <h1>
+          <span sec:authorize="hasRole('ROLE_ROLE_ADMIN')">Всі нотатки</span>
+          <span sec:authorize="hasRole('ROLE_ROLE_USER')">Мої нотатки</span>
+          <span th:if="${notesList != null}">
+            <small th:text="${#arrays.length(notesList)}"></small>
+            <small>шт.&nbsp</small>
+          </span>
+          <a class="btn clr" title="Створити нову нотатку" th:href="@{/note/create}">
+            Створити
+          </a>
+          <span style="float:right">
+            <small>Користувач:&nbsp</small>
+            <p2 sec:authentication="principal.name"></p2>
+            <a class="btn clr" title="Вихід з облікового запису" th:href="@{/logout}">
+              Вийти
+            </a>
+          </span>
+        </h1>
+      </section>
+      <section class="content">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="box">
+              <div class="box-body">
+                <table id="full-feature-table-1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Ім'я</th>
+                    <th>Вміст</th>
+                    <th>Доступ</th>
+                    <th>Дії</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="note : ${notesList}">
+                    <td style="width:15%">
+                      <div th:text="${note.name}"></div>
+                      <div sec:authorize="hasRole('ROLE_ROLE_ADMIN')">
+                        <div class="btn clr">
+                          <i class="fa fa-tags"></i>
+                          <span th:text="${note.user.email}"></span>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="width:70%">
+                      <pre th:utext="${note.html}"></pre>
+                    </td>
+                    <td th:text="${note.access.label}" style="width:auto"></td>
+                    <td style="width:auto">
+                      <a class="btn clr" title="Редагувати" th:href="@{/note/edit/{id}(id=${note.id})}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </a>
+                      <a class="btn clr" title="Видалити" th:href="@{/note/delete/{id}(id=${note.id})}">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </a>
+                      <button class="btn clr" title="Копіювати адресу посилання"
+                              th:onclick="copyToClipboard([[@{/note/share/{id}(id=${note.id})}]])">
+                        <i class="fa fa-link" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script th:src="@{/plugins/jQuery/jQuery-2.1.4.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/plugins/datatables/dataTables.bootstrap.min.js}"></script>
+    <script>
+      $(function () {
+        $('#full-feature-table-1').DataTable({
+          "language": {
+            "infoFiltered": "(відфільтровано з _MAX_ записів)",
+            "search": "Пошук:",
+            "lengthMenu": "Показати _MENU_ записів",
+            "infoEmpty": "Показано від 0 по 0 з 0 записів",
+            "info": "Показано від _START_ по _END_ з _TOTAL_ записів",
+            "emptyTable": "Ця таблиця не містить даних"
+          }
+        });
+        $('#simple-table').DataTable({
+          "paging": true,
+          "lengthChange": false,
+          "searching": false,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false
+        });
+      });
+    </script>
+    <script>
+      function copyToClipboard(uri) {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = location.origin + uri;
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+        alert("Посилання на нотатку:\n " + inputc.value + "\n скопійовано в буфер обміну.");
+      }
+    </script>
+  </body>
+</html>
